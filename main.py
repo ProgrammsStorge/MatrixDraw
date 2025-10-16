@@ -1,4 +1,6 @@
 import math
+import os
+import time
 
 try:
     print(r" ________  ________  ________  ___       __                                ")
@@ -18,7 +20,7 @@ try:
     print(r"    \|__|    \|__|\|_______|\|_______|\|__|\|__|\|_______|\_________\  ___ ")
     print(r"                                                         \|_________| |\__\\")
     print(r"                                                                      \|__|")
-
+    anim=input("Анимировать рисование?(Y/N): ").lower()=="y"
     w_m=int(input("Укажите ширину матрицы: "))
     h_m=int(input("Укажите высоту матрицы: "))
     full_char=input("Символ для заполнения: ")
@@ -68,16 +70,21 @@ try:
     }
 
     def draw():
-        global matrix
+        global matrix,anim
+        if anim:os.system("clear")
         for row in matrix:
             for element in row:
                 print(element, end='')
             print()
 
     def set_pix(xy,sim = main_char):
-        global matrix,main_char
+        global matrix,main_char,anim
         try:
-            matrix[round(xy[1])][round(xy[0])]=sim
+            if xy[0]>=0 and xy[1]>=0:
+                if anim and matrix[round(xy[1])][round(xy[0])]!=sim:
+                    draw()
+                    time.sleep(0.05)
+                matrix[round(xy[1])][round(xy[0])]=sim
         except:pass # скорее всего пиксель вышел за экран.
 
     def draw_line(point1,point2):
@@ -92,7 +99,7 @@ try:
                 break
 
     def draw_figure(name,pos,text):
-        global figure
+        global figure,anim
         for line in figure[name]:
             point1 = line[0]
             point2 = line[1]
@@ -108,6 +115,7 @@ try:
             draw_line(point1,point2)
 
         for i,sim in enumerate(text):
+
             set_pix([  (round(pos[2])//2-round(len(text))//2)  +i+  pos[0],pos[3]/2+  pos[1]],sim)
 
     def draw_cyrcle(pos):
@@ -120,6 +128,9 @@ try:
                 point1[0] += pos[0]
                 point1[1] += pos[1]
                 set_pix(point1)
+                if anim:
+                    draw()
+                    time.sleep(0.1)
     while True:
         print("Фигуры: " + " ".join(figure))
         fig=input("Выберете фигуру: ")
